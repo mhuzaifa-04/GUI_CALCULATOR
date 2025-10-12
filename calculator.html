@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gray-900">
+  <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl w-80">
+    <h1 class="text-white text-2xl font-bold text-center mb-4">JS Calculator</h1>
+
+    <div id="calculator" class="calculator-grid grid grid-cols-4 gap-3 bg-gray-800 p-4 rounded-xl shadow-2xl">
+      <!-- Display -->
+      <div id="display"
+        class="col-span-4 bg-gray-700 text-white flex items-end justify-end p-4 rounded-lg mb-2 overflow-hidden font-mono text-2xl">
+        0
+      </div>
+
+      <!-- Row 1 -->
+      <button class="bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-500" data-value="C">C</button>
+      <button class="bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-500" data-value="->">-></button>
+      <button class="bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-500" data-value="%">%</button>
+      <button class="bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-400" data-value="/">÷</button>
+
+      <!-- Row 2 -->
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="7">7</button>
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="8">8</button>
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="9">9</button>
+      <button class="bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-400" data-value="*">×</button>
+
+      <!-- Row 3 -->
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="4">4</button>
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="5">5</button>
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="6">6</button>
+      <button class="bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-400" data-value="-">−</button>
+
+      <!-- Row 4 -->
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="1">1</button>
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="2">2</button>
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="3">3</button>
+      <button class="bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-400" data-value="+">+</button>
+
+      <!-- Row 5 -->
+      <button class="col-span-2 bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value="0">0</button>
+      <button class="bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600" data-value=".">.</button>
+      <button class="bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-400" data-value="=">=</button>
+    </div>
+  </div>
+
+  <script>
+    let currentExpression = "";
+    const display = document.getElementById("display");
+
+    function clearDisplay() {
+      currentExpression = "";
+      display.textContent = "0";
+    }
+
+    function deleteLast() {
+      currentExpression = currentExpression.slice(0, -1);
+      display.textContent = currentExpression || "0";
+    }
+
+    function calculate() {
+      try {
+        let finalExpression = currentExpression.replace(/%/g, "/100");
+        if (!finalExpression) {
+          display.textContent = "0";
+          return;
+        }
+        let result = eval(finalExpression);
+        if (!isFinite(result)) throw new Error("Math Error");
+        currentExpression = parseFloat(result.toFixed(10)).toString();
+        display.textContent = currentExpression;
+      } catch {
+        display.textContent = "Error";
+        currentExpression = "";
+      }
+    }
+
+    function appendValue(value) {
+      switch (value) {
+        case "C":
+          clearDisplay();
+          break;
+        case "->":
+            deleteLast();
+          break;
+        case "=":
+          calculate();
+          break;
+        default:
+          currentExpression += value;
+          display.textContent = currentExpression;
+      }
+    }
+
+    // Add event listeners
+    const buttons = document.querySelectorAll("#calculator button");
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        const value = button.getAttribute("data-value");
+        appendValue(value);
+      });
+    });
+
+    // Initialize
+    clearDisplay();
+  </script>
+</body>
+
+</html>
